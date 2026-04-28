@@ -1,12 +1,21 @@
 import datetime
+from tkinter import TRUE
 
 # Video Path
+# VIDEO_CONFIG = {
+#     "VIDEO_CAP": "C:/Users/mosam/Crowd-Analysis/assets/7.mp4",
+#     "IS_CAM": False,
+#     "CAM_APPROX_FPS": 3,
+#     "HIGH_CAM": False,
+#     "START_TIME": datetime.datetime(2020, 11, 5, 0, 0, 0, 0)
+# }
+
 VIDEO_CONFIG = {
-	"VIDEO_CAP" : "video/7.mp4",
-	"IS_CAM" : False,
-	"CAM_APPROX_FPS": 3,
-	"HIGH_CAM": False,
-	"START_TIME": datetime.datetime(2020, 11, 5, 0, 0, 0, 0)
+    "VIDEO_CAP": 0,   # webcam
+    "IS_CAM": True,
+    "CAM_APPROX_FPS": 3,
+    "HIGH_CAM": False,
+    "START_TIME": datetime.datetime(2020, 11, 5, 0, 0, 0, 0)
 }
 
 # Load YOLOv3-tiny weights and config
@@ -18,6 +27,7 @@ YOLO_CONFIG = {
 SHOW_PROCESSING_OUTPUT = True
 # Show individuals detected
 SHOW_DETECT = True
+SHOW_TRACKING_ID = TRUE
 # Data record
 DATA_RECORD = True
 # Data record rate (data record per frame)
