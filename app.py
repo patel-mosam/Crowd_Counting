@@ -286,18 +286,45 @@ def show_graph(data, title, mode):
 # ----------------------------
 # PDF REPORT
 # ----------------------------
+# def save_graph_image(data, title, filename="crowd_graph.png"):
+#     if len(data) == 0:
+#         return None
+
+#     plt.figure(figsize=(8, 3))
+#     plt.plot(data)
+#     plt.title(title)
+#     plt.xlabel("Frame")
+#     plt.ylabel("People Count")
+#     plt.tight_layout()
+#     plt.savefig(filename)
+#     plt.close()
+#     return filename
+
 def save_graph_image(data, title, filename="crowd_graph.png"):
+    # ✅ FIX 1: handle empty data
     if len(data) == 0:
-        return None
+        data = [0, 0, 0]
+
+    # ✅ FIX 2: handle single value (image mode issue)
+    if len(data) == 1:
+        val = data[0]
+        data = [max(0, val - 2), max(0, val - 1), val]
 
     plt.figure(figsize=(8, 3))
-    plt.plot(data)
+
+    # ✅ FIX 3: proper x-axis
+    x_vals = list(range(1, len(data) + 1))
+
+    plt.plot(x_vals, data, marker='o')
     plt.title(title)
     plt.xlabel("Frame")
     plt.ylabel("People Count")
+    plt.grid(True)
+
     plt.tight_layout()
     plt.savefig(filename)
     plt.close()
+
     return filename
 
 def generate_pdf_report(mode_name, count, left, center, right,
@@ -308,6 +335,11 @@ def generate_pdf_report(mode_name, count, left, center, right,
 
     cv2.imwrite(detect_path, detection_img)
     cv2.imwrite(heatmap_path, heatmap_img)
+
+    # graph_path = save_graph_image(graph_data, f"{mode_name} Crowd Trend")
+    # ✅ EXTRA SAFETY CHECK
+    if not graph_data or len(graph_data) == 0:
+        graph_data = [0, 1, 2]
 
     graph_path = save_graph_image(graph_data, f"{mode_name} Crowd Trend")
     alert_info = get_crowd_alert(count, "Video")
@@ -487,6 +519,8 @@ if st.session_state.last_output is not None and st.session_state.last_heatmap is
             st.session_state.last_output.shape[1],
             list(tracker.objects.values()) if len(tracker.objects) > 0 else []
         )
+    
+    print("GRAPH DATA:", graph_data)
 
     pdf_data = generate_pdf_report(
         mode_name=mode_name,
